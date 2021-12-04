@@ -1,13 +1,18 @@
 package D04;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
     static int noLines = 5;
     private int[][] values;
+    private AtomicBoolean hasWon;
+    private int id;
 
     public Board() {
         this.values = new int[5][5];
+        hasWon = new AtomicBoolean();
+        hasWon.set(false);
     }
 
     public static int getNoLines() {
@@ -18,12 +23,32 @@ public class Board {
         Board.noLines = noLines;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int[][] getValues() {
         return values;
     }
 
     public void setValues(int[][] values) {
         this.values = values;
+    }
+
+    public AtomicBoolean getHasWon() {
+        return hasWon;
+    }
+
+    public void setHasWon(AtomicBoolean hasWon) {
+        this.hasWon = hasWon;
+    }
+
+    public void setHasWon(boolean hasWon) {
+        this.hasWon.set(hasWon);
     }
 
     @Override
