@@ -51,8 +51,6 @@ class Point {
   }
 }
 
-List<Point> basinPoints = [];
-
 Future<void> main() async {
   List<List<int>> matrix = [];
   List<Point> lowPoints = [];
@@ -63,61 +61,36 @@ Future<void> main() async {
 
 int findProductBasins(List<List<int>> matrix, List<Point> lowPoints) {
   List<int> basinSizes = [];
-
+  List<List<bool>> isVisited = List.generate(
+    matrix.length,
+    (line) => List.generate(matrix[0].length, (index) => false),
+  );
   for (final lowPoint in lowPoints) {
-    int searchedValue = lowPoint.getValue(matrix);
-    List<List<bool>> isVisited = List.generate(
-      matrix.length,
-      (line) => List.generate(matrix[0].length, (index) => false),
-    );
-
-    int basinSize = fill(lowPoint, matrix, searchedValue, isVisited);
-
+    int basinSize = fill(lowPoint, matrix, isVisited);
     basinSizes.add(basinSize);
   }
   basinSizes.sort((a, b) => b - a);
   int product = basinSizes[0] * basinSizes[1] * basinSizes[2];
 
-  printMatrix(matrix);
-
   return product;
 }
 
-void printMatrix(List<List<int>> matrix) {
-  for (int idLine = 0; idLine < matrix.length; ++idLine) {
-    for (int idCol = 0; idCol < matrix[idLine].length; ++idCol) {
-      if (basinPoints.contains(Point(idLine, idCol))) {
-        stdout.write(matrix[idLine][idCol]);
-      } else {
-        stdout.write("-");
-      }
-    }
-    print('');
-  }
-}
-
-int fill(Point point, List<List<int>> matrix, int searchedValue,
-    List<List<bool>> isVisited) {
+int fill(Point point, List<List<int>> matrix, List<List<bool>> isVisited) {
   if (point.isInside(matrix) == false) {
     return 0;
   }
 
-  if (searchedValue == 9 ||
-      point.getValue(matrix) == 9 ||
-      point.getValue(matrix) != searchedValue ||
-      point.getIsVisited(isVisited) == true) {
+  if (point.getValue(matrix) == 9 || point.getIsVisited(isVisited) == true) {
     return 0;
   }
 
   isVisited[point.idLine][point.idCol] = true;
 
-  basinPoints.add(point);
-
   return 1 +
-      fill(point.getLeft(), matrix, searchedValue + 1, isVisited) +
-      fill(point.getRight(), matrix, searchedValue + 1, isVisited) +
-      fill(point.getUp(), matrix, searchedValue + 1, isVisited) +
-      fill(point.getDown(), matrix, searchedValue + 1, isVisited);
+      fill(point.getLeft(), matrix, isVisited) +
+      fill(point.getRight(), matrix, isVisited) +
+      fill(point.getUp(), matrix, isVisited) +
+      fill(point.getDown(), matrix, isVisited);
 }
 
 int findSumOfLowPoints(List<List<int>> matrix, List<Point> lowPoints) {
