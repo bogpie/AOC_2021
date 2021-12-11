@@ -19,8 +19,11 @@ class D11 {
   }
 
   Future<void> read() async {
+    // Reset project data
     flashes = 0;
     matrix = [];
+    momentAllFlashed = 0;
+
     String input = await File('D11.in').readAsStringSync();
     LineSplitter splitter = LineSplitter();
     List<String> strings = splitter.convert(input).toList();
@@ -43,10 +46,7 @@ class D11 {
   }
 
   void countFlashes(int limit) {
-    for (int step = 0; step <= limit; ++step) {
-      // printMatrix(step);
-      if (step == limit) break; // Print one more time, for the last step
-
+    for (int step = 0; step < limit; ++step) {
       matrix = matrix
           .map((List<int> line) =>
               line.map((int element) => element + 1).toList())
