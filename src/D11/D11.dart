@@ -3,8 +3,8 @@ import 'dart:io';
 
 class D11 {
   List<List<int>> matrix = []; // Input
-  int flashes = 0; // Output
-  int momentAllFlashed = 0;
+  int flashes = 0; // Output 1
+  int momentAllFlashed = 0; // Output 2
 
   static Future<void> main() async {
     D11 data = D11();
