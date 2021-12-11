@@ -14,8 +14,6 @@ class D11 {
     String input = await File('D11.in').readAsStringSync();
     LineSplitter splitter = LineSplitter();
     List<String> strings = splitter.convert(input).toList();
-    // int noLines = strings.length;
-    // int noCols = strings.first.length;
     strings.forEach(
           (string) {
         List<String> split = string.split("");
