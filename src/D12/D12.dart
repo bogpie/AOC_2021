@@ -66,13 +66,13 @@ class D12 {
 
     if (graph[cave] == null) return;
     for (final neighbour in graph[cave]!) {
-      if (isSmall(neighbour) == true) {
+      if (isSmall(neighbour)) {
         if (noVisits[neighbour] == null) return;
         if (noVisits[neighbour] == 1) continue;
         noVisits[neighbour] = 1;
       }
       DFS(neighbour);
-      if (isSmall(neighbour) == true) {
+      if (isSmall(neighbour)) {
         noVisits[neighbour] = 0;
       }
     }
@@ -88,12 +88,12 @@ class D12 {
     for (final neighbour in graph[cave]!) {
       if (neighbour == 'start') {
         continue;
-      } else if (isSmall(neighbour) == true) {
+      } else if (isSmall(neighbour)) {
         if (noVisits[neighbour] == null) {
           return;
         }
-        if (noVisits[neighbour] == 1 && hasVisitedTwice == true) {
-        } else if (noVisits[neighbour] == 1 && hasVisitedTwice == false) {
+        if (noVisits[neighbour] == 1 && hasVisitedTwice) {
+        } else if (noVisits[neighbour] == 1 && !hasVisitedTwice) {
           noVisits[neighbour] = noVisits[neighbour]! + 1;
           hasVisitedTwice = true;
           specialDFS(neighbour);
