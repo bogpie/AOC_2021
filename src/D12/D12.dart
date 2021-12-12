@@ -4,19 +4,29 @@ import 'dart:io';
 
 class D12 {
   Map<String, SplayTreeSet<String>> graph = Map();
-  Map<String, bool> isVisited = Map();
+  Map<String, int> noVisits = Map();
   int noPaths = 0;
+  bool hasVisitedTwice = false;
 
   static Future<void> main() async {
     D12 data = D12();
     await data.read();
-    print(data.graph);
-    data.isVisited["start"] = true;
+    data.noVisits["start"] = 1;
     data.DFS("start");
+    print(data.noPaths);
+
+    await data.read();
+    data.noVisits["start"] = 1;
+    data.specialDFS("start");
     print(data.noPaths);
   }
 
   Future<void> read() async {
+    graph = Map();
+    noVisits = Map();
+    noPaths = 0;
+    hasVisitedTwice = false;
+
     String input = await File('D12.in').readAsStringSync();
     LineSplitter splitter = LineSplitter();
     List<String> strings = splitter.convert(input).toList();
@@ -34,11 +44,11 @@ class D12 {
         graph[split.last]!.add(split.first);
 
         if (isSmall(split.first)) {
-          isVisited[split.first] = false;
+          noVisits[split.first] = 0;
         }
 
         if (isSmall(split.last)) {
-          isVisited[split.last] = false;
+          noVisits[split.last] = 0;
         }
       },
     );
@@ -57,14 +67,46 @@ class D12 {
     if (graph[cave] == null) return;
     for (final neighbour in graph[cave]!) {
       if (isSmall(neighbour) == true) {
-        if (isVisited[neighbour] == null) return;
-        if (isVisited[neighbour] == true) continue;
-        isVisited[neighbour] = true;
+        if (noVisits[neighbour] == null) return;
+        if (noVisits[neighbour] == 1) continue;
+        noVisits[neighbour] = 1;
       }
       DFS(neighbour);
       if (isSmall(neighbour) == true) {
-        isVisited[neighbour] = false;
+        noVisits[neighbour] = 0;
       }
+    }
+  }
+
+  void specialDFS(String cave) {
+    if (cave == 'end') {
+      ++noPaths;
+      return;
+    }
+
+    if (graph[cave] == null) return;
+    for (final neighbour in graph[cave]!) {
+      if (neighbour == 'start') {
+        continue;
+      } else if (isSmall(neighbour) == true) {
+        if (noVisits[neighbour] == null) {
+          return;
+        }
+        if (noVisits[neighbour] == 1 && hasVisitedTwice == true) {
+        } else if (noVisits[neighbour] == 1 && hasVisitedTwice == false) {
+          noVisits[neighbour] = noVisits[neighbour]! + 1;
+          hasVisitedTwice = true;
+          specialDFS(neighbour);
+          noVisits[neighbour] = noVisits[neighbour]! - 1;
+          hasVisitedTwice = false;
+        } else if (noVisits[neighbour] == 0) {
+          noVisits[neighbour] = noVisits[neighbour]! + 1;
+          specialDFS(neighbour);
+          noVisits[neighbour] = noVisits[neighbour]! - 1;
+        }
+        continue;
+      }
+      specialDFS(neighbour);
     }
   }
 }
