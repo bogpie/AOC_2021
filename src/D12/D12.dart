@@ -92,8 +92,7 @@ class D12 {
         if (noVisits[neighbour] == null) {
           return;
         }
-        if (noVisits[neighbour] == 1 && hasVisitedTwice) {
-        } else if (noVisits[neighbour] == 1 && !hasVisitedTwice) {
+        if (noVisits[neighbour] == 1 && !hasVisitedTwice) {
           noVisits[neighbour] = noVisits[neighbour]! + 1;
           hasVisitedTwice = true;
           specialDFS(neighbour);
