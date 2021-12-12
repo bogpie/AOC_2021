@@ -56,12 +56,9 @@ class D12 {
 
     if (graph[cave] == null) return;
     for (final neighbour in graph[cave]!) {
-      if (isSmall(neighbour) && isVisited[neighbour] == null) return;
-      if (isSmall(neighbour) && isVisited[neighbour] == true) {
-        continue;
-      }
-
       if (isSmall(neighbour) == true) {
+        if (isVisited[neighbour] == null) return;
+        if (isVisited[neighbour] == true) continue;
         isVisited[neighbour] = true;
       }
       DFS(neighbour);
