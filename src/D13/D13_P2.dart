@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-class Point {
+class Point implements Comparable {
   int x;
   int y;
 
@@ -19,6 +19,20 @@ class Point {
       return x == other.x && y == other.y;
     }
     return false;
+  }
+
+  @override
+  int compareTo(other) {
+    if (other is Point) {
+      if (x == other.x) {
+        if (y == other.y) {
+          return 0;
+        }
+        return y - other.y;
+      }
+      return x - other.x;
+    }
+    return 0;
   }
 }
 
@@ -49,52 +63,40 @@ class D13 {
 
   Future<void> main() async {
     await read();
-    int noOverlaps = 0;
-
     File output = File('D13.out');
     await output.writeAsString('');
 
     int idFold = 0;
     for (final fold in folds) {
-      ++idFold;
-      print(idFold);
-
-      List<Point> overlaps = [];
       List<Point> complementaries = [];
 
       for (final sharp in sharps) {
         Point complementary = Point(sharp.x, sharp.y);
-        complementaries.add(complementary);
-        if (fold.type == 'x') {
-          complementary.x = maximum.x - sharp.x;
-        } else {
-          complementary.y = maximum.y - sharp.y;
+        if (fold.type == 'x' && sharp.x > fold.value) {
+          int difference = sharp.x - fold.value;
+          complementary.x = sharp.x - difference * 2;
+
+          complementaries.add(complementary);
+        } else if (fold.type == 'y' && sharp.y > fold.value) {
+          int difference = sharp.y - fold.value;
+          complementary.y = sharp.y - difference * 2;
+          complementaries.add(complementary);
         }
-        //if (sharps.contains(complementary)) {
-        //++noOverlaps;
-        //overlaps.add(sharp);
-        //}
       }
-      //noSharps = sharps.length - noOverlaps + noOverlaps ~/ 2;
-      //print(noSharps);
-
       sharps.addAll(complementaries);
-      sharps = sharps.toSet().toList(); // remove duplicates
-
-      List <Point> newSharps = [];
-
-      int newMaximumX = fold.type == 'x' ? maximum.x ~/ 2 - 1 : maximum.x;
-      int newMaximumY = fold.type == 'y' ? maximum.y ~/ 2 - 1 : maximum.y;
+      int newMaximumX = fold.type == 'x' ? fold.value - 1 : maximum.x;
+      int newMaximumY = fold.type == 'y' ? fold.value - 1 : maximum.y;
       Point newMaximum = Point(newMaximumX, newMaximumY);
       sharps.removeWhere((sharp) => sharp.x > newMaximum.x);
       sharps.removeWhere((sharp) => sharp.y > newMaximum.y);
-      if (idFold == folds.length) {
+
+      if (idFold == folds.length - 1) {
         for (int idCol = 0; idCol <= newMaximum.y; ++idCol) {
           for (int idLine = 0; idLine <= newMaximum.x; ++idLine) {
             if (sharps.contains(Point(idLine, idCol))) {
-              await output.writeAsString('#', mode: FileMode.append);
+              await output.writeAsString('█', mode: FileMode.append);
             } else {
-              await output.writeAsString(' ', mode: FileMode.append);
+              await output.writeAsString('.', mode: FileMode.append);
             }
           }
           await output.writeAsString('\n', mode: FileMode.append);
@@ -103,12 +105,11 @@ class D13 {
       }
 
       maximum = newMaximum;
+      ++idFold;
     }
   }
 
   Future<void> read() async {
-    // matrix = List.generate(SIZE, (index) => List.generate(SIZE, (index) => 0));
-
     String input = await File('D13.in').readAsStringSync();
     LineSplitter splitter = LineSplitter();
     List<String> strings = splitter.convert(input).toList();
@@ -130,9 +131,6 @@ class D13 {
       maximum.y = max(y, maximum.y);
       sharps.add(Point(x, y));
     }
-    print(sharps);
-    print(folds);
-    print(maximum);
   }
 }
 
