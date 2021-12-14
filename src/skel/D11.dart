@@ -1,19 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
-class D11 {
+class D14 {
   List<List<int>> matrix = [];
 
-  static Future<void> main() async {
-    D11 data = D11();
-    await data.read();
-    print(data.matrix);
+  Future<void> main() async {
+    await read();
+    print(matrix);
   }
 
   Future<void> read() async {
-    String input = await File('D11.in').readAsStringSync();
+    String input = await File('D14.in').readAsStringSync();
     LineSplitter splitter = LineSplitter();
     List<String> strings = splitter.convert(input).toList();
+
+    Iterator iterator = strings.iterator;
+
     strings.forEach(
           (string) {
         List<String> split = string.split("");
@@ -35,6 +37,7 @@ class D11 {
   }
 }
 
-main() {
-  D11.main();
+Future<void> main() async {
+  D14 data = new D14();
+  await data.main();
 }
