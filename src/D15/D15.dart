@@ -6,11 +6,11 @@ import 'Point.dart';
 
 class D15 {
   List<List<int>> matrix = [];
-  List<List<bool>> isVisited = [];
 
   Future<void> main() async {
     await read();
-    findShortestPath();
+    findShortestPath(false);
+    findShortestPath(true);
   }
 
   Future<void> read() async {
@@ -28,18 +28,46 @@ class D15 {
         ).toList(),
       ),
     );
-
-    isVisited = List.generate(
-      matrix.length,
-      (index) => List.generate(matrix[0].length, (index) => false),
-    );
   }
 
   void printPoint(Point point) {
     print('$point --> ${matrix[point.idLine][point.idCol]}');
   }
 
-  void findShortestPath() {
+  void findShortestPath(bool isBig) {
+    List<List<int>> sections = [];
+    List<List<bool>> isVisited = [];
+
+    if (isBig) {
+      sections = List.generate(
+          5, (idLine) => List.generate(5, (idCol) => idLine + idCol));
+      List<List<int>> newMatrix = List.generate(
+        matrix.length * 5,
+        (idLine) => List.generate(
+          matrix[0].length * 5,
+          (idCol) {
+            int sectionLine = idLine ~/ matrix.length;
+            int sectionCol = idCol ~/ matrix[0].length;
+
+            Point original =
+                Point(idLine % matrix.length, idCol % matrix[0].length);
+
+            int value = (matrix[original.idLine][original.idCol] +
+                    sections[sectionLine][sectionCol]) %
+                9;
+            if (value == 0) value = 9;
+            return value;
+          },
+        ),
+      );
+      matrix = newMatrix;
+    }
+
+    isVisited = List.generate(
+      matrix.length,
+      (idLine) => List.generate(matrix[0].length, (idCol) => false),
+    );
+
     SplayTreeSet<SetElement> set = SplayTreeSet(
       (SetElement first, SetElement second) {
         if (first.cost == second.cost) {
@@ -57,15 +85,7 @@ class D15 {
     Point end = Point(matrix.length - 1, matrix[0].length - 1);
     set.add(SetElement(start, 0));
 
-    List<List<int>> cost;
-
-    cost = List.generate(matrix.length,
-        (index) => List.generate(matrix[0].length, (index) => 0));
-
     while (set.isNotEmpty) {
-      // set.forEach(print);
-      // print('');
-
       SetElement top = set.first;
       set.remove(top);
       if (isVisited[top.point.idLine][top.point.idCol]) {
