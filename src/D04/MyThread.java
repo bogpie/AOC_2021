@@ -5,13 +5,11 @@ import java.util.concurrent.BrokenBarrierException;
 
 public class MyThread extends Thread {
     private final int idThread;
-    private final Object mutex;
     private final D04 data;
 
     public MyThread(int idThread, D04 data) {
         this.idThread = idThread;
         this.data = data;
-        this.mutex = new Object();
     }
 
     private void drawValue(int[][] values, int drawn) {
