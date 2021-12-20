@@ -9,7 +9,8 @@ class D20 {
 
   Future<void> main() async {
     await read();
-    doPartOne();
+    int noIterations = 50;
+    countLitPixels(noIterations);
   }
 
   Future<void> read() async {
@@ -28,14 +29,14 @@ class D20 {
     );
   }
 
-  void doPartOne() {
+  void countLitPixels(int noIterations) {
     List<List<String>> oldMatrix = [];
     oldMatrix.addAll(matrix);
     List<List<String>> newMatrix = [];
 
     int resize = 3;
 
-    for (int iteration = 0; iteration < 2; ++iteration) {
+    for (int iteration = 0; iteration < noIterations; ++iteration) {
       newMatrix = List.generate(
         oldMatrix.length + resize * 2,
         (index) =>
@@ -46,7 +47,7 @@ class D20 {
         for (int idCol = -resize; idCol < oldMatrix[0].length + resize; ++idCol) {
           Point point = Point(idLine, idCol);
           List<String> neighboursValues =
-              point.getAllNeighboursValues(oldMatrix, iteration);
+              point.getAllNeighboursValues(oldMatrix, iteration, algorithm);
           List<int> algorithmIndexList = neighboursValues
               .map((String value) => value == '.' ? 0 : 1)
               .toList();
@@ -64,9 +65,6 @@ class D20 {
     }
 
     matrix = newMatrix;
-
-    print(matrix);
-
     int noLit = matrix
         .map((line) => line
             .where((element) => element == '#')

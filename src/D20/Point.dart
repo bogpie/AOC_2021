@@ -29,7 +29,7 @@ class Point {
   }
 
   List<String> getAllNeighboursValues(
-      List<List<String>> matrix, int iteration) {
+      List<List<String>> matrix, int iteration, List<String> algorithm) {
     List<String> neighboursValues = [];
     for (int deltaLine = -1; deltaLine <= 1; ++deltaLine) {
       for (int deltaCol = -1; deltaCol <= 1; ++deltaCol) {
@@ -38,7 +38,9 @@ class Point {
         if (Point(newIdLine, newIdCol).isInside(matrix)) {
           neighboursValues.add(matrix[newIdLine][newIdCol]);
         } else {
-          neighboursValues.add(iteration % 2 == 1 ? '#' : '.');
+          neighboursValues
+              .add(iteration % 2 == 1 ? algorithm[0] : algorithm[1 << 9 - 1]);
+          // edge cases where algorithm index is 0 0000 0000 or 1 1111 1111
         }
       }
     }
