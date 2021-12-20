@@ -66,8 +66,8 @@ class D11 {
         }
       }
       int flashesOnStep = matrix
-          .map((line) => line.where((element) => element == 0).length)
-          .reduce((value, element) => value + element);
+          .map((line) => line.where((element) => element == 0).length) // turn each line into number of searched elements
+          .reduce((value, element) => value + element); // sum of each counter
       flashes += flashesOnStep;
 
       if (flashesOnStep == matrix.length * matrix[0].length) {

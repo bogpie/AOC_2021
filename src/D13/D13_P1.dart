@@ -20,6 +20,7 @@ class Point {
     }
     return false;
   }
+
 }
 
 class Fold {
