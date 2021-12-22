@@ -29,6 +29,7 @@ class D21 {
     positions.addAll(startingPositions);
     int die = 1;
     int maxDie = 100;
+    int maxScore = 1000;
 
     bool gameOver = false;
     while (gameOver == false) {
@@ -46,7 +47,7 @@ class D21 {
         }
         score[idPlayer] += positions[idPlayer];
 
-        if (score[idPlayer] >= 1000) {
+        if (score[idPlayer] >= maxScore) {
           gameOver = true;
           break;
         }
